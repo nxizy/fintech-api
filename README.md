@@ -33,12 +33,18 @@
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user_id": "c61a3b98-2d4e-11ef-bf4b-123456789abc",
+  "user": {
+    "name": "Luiz Carvalho",
+    "document": "51866223038",
+    "phoneNumber": "11999999999",
+    "birthDate": "2007-02-21",
+    "email": "email2luiz@gmail.com",
+    "investorLevel": "AVANCADO"
+  },
   "accounts": [
     {
       "account_id": "6e54e570-2d4e-11ef-bf4b-123456789abc",
-      "account_name": "Pessoal",
-      "is_default": true
+      "account_name": "Pessoal"
     }
   ]
 }
@@ -48,7 +54,6 @@
 
 | Código | Motivo                    |
 | ------ | ------------------------- |
-| 400    | Campos inválidos          |
 | 401    | Email ou senha incorretos |
 | 500    | Erro interno do servidor  |
 
@@ -64,22 +69,62 @@
 
 ```json
 {
-  "user_name": "Luiz Carvalho",
-  "birth_date": "2007-02-21",
-  "document_number": "00000000000",
-  "phone_number": "11999999999",
+  "name": "Luiz Carvalho",
+  "document": "51866223038",
+  "phoneNumber": "11999999999",
+  "birthDate": "2007-02-21",
   "email": "email2luiz@gmail.com",
-  "password": "password"
+  "password": "password",
+  "userRole" : "AUTHORIZED",
+  "investorLevel": "AVANCADO"
 }
 ```
 
 **Response 201**
 
+#### Erros possíveis
+
+| Código | Motivo                   |
+| ------ | ------------------------ |
+| 400    | Dados inválidos          |
+| 409    | Email ou Documento ou número de telefone já cadastrado|
+| 500    | Erro interno do servidor |
+
+---
+
+### 1.3 Alterar usuário
+
+### *PUT /user*
+
+**Descrição:** Atualiza os dados do usuário.
+
+**Atenção:** Requer token JWT.
+
+**Request Body**
+
 ```json
 {
-  "user_id": "c61a3b98-2d4e-11ef-bf4b-123456789abc",
-  "account_id": "6e54e570-2d4e-11ef-bf4b-123456789abc",
-  "account_name": "Pessoal"
+  "name": "Luiz Carvalho",
+	"document": "03758045010",
+	"phoneNumber": "19999999999",
+	"birthDate": "2007-02-21",
+	"email": "email3luiz@gmail.com",
+	"password" : "password",
+	"investorLevel": "AVANCADO"
+}
+```
+
+**Response 200**
+
+```json
+{
+  "name": "Luiz Carvalho",
+	"document": "03758045010",
+	"phoneNumber": "19999999999",
+	"birthDate": "2007-02-21",
+	"email": "email3luiz@gmail.com",
+	"password" : "password",
+	"investorLevel": "AVANCADO"
 }
 ```
 
@@ -88,7 +133,30 @@
 | Código | Motivo                   |
 | ------ | ------------------------ |
 | 400    | Dados inválidos          |
-| 409    | Email já cadastrado      |
+| 401    | Acesso negado            |
+| 404    | Usuário não encontrado   |
+| 409    | E-mail, Documento ou Número de Telefone já registrados |
+| 500    | Erro interno do servidor |
+
+---
+
+### 1.4 Apagar usuário
+
+### *DELETE /user*
+
+**Descrição:** Apaga usuário do banco de dados
+
+**Atenção:** Requer token JWT.
+
+**Request Body:** O usuário será identificado pelo JWT dado junto a requisição.
+
+**Response 204**
+
+#### Erros possíveis
+
+| Código | Motivo                   |
+| ------ | ------------------------ |
+| 404    | Usuário não encontrado   |
 | 500    | Erro interno do servidor |
 
 ---
@@ -109,13 +177,11 @@
 [
   {
     "account_id": "6e54e570-2d4e-11ef-bf4b-123456789abc",
-    "account_name": "Pessoal",
-    "is_default": true
+    "account_name": "Pessoal"
   },
   {
     "account_id": "7a7a6780-2d4e-11ef-bf4b-123456789abc",
-    "account_name": "Investimentos",
-    "is_default": false
+    "account_name": "Investimentos"
   }
 ]
 ```
@@ -129,11 +195,11 @@
 
 ---
 
-### 2.2 Atualizar dados do usuário e da conta logada
+### 2.2 Atualizar dados da conta.
 
 ### *PUT /accounts/{id}*
 
-**Descrição:** Atualiza dados do usuário e preferências da conta (nome e se é padrão ou não).
+**Descrição:** Atualiza dados da conta (nome).
 
 **Atenção:** Requer token JWT.
 
@@ -141,15 +207,7 @@
 
 ```json
 {
-  "user_name": "Luiz Victor Carvalho",
-  "birth_date": "2007-02-21",
-  "document_number": "00000000000",
-  "phone_number": "11995994999",
-  "email": "email2luiz@gmail.com",
-  "account_name": "Pessoal",
-  "is_default": false,
-  "created_at": "2022-10-25T10:05:00",
-  "password": "password"
+  "name" : "Empresa"
 }
 ```
 
@@ -157,14 +215,7 @@
 
 ```json
 {
-  "user_name": "Luiz Victor Carvalho",
-  "birth_date": "2007-02-21",
-  "document_number": "00000000000",
-  "phone_number": "11995994999",
-  "email": "email2luiz@gmail.com",
-  "account_name": "Pessoal",
-  "is_default": false,
-  "created_at": "2022-10-25T10:05:00"
+  "name" : "Empresa"
 }
 ```
 
@@ -173,6 +224,8 @@
 | Código | Motivo                           |
 | ------ | -------------------------------- |
 | 400    | Dados inválidos                  |
+| 401    | Token inválido |
+| 403    | Usuário sem permissão de alteração desta conta |
 | 404    | Usuário ou conta não encontrados |
 | 500    | Erro interno do servidor         |
 
@@ -185,18 +238,11 @@
 **Descrição:** Cria uma nova conta vinculada ao usuário autenticado.
 **Atenção:** Requer token JWT.
 
-**Comportamento sugerido:**
-
-* `is_default` default = `false`.
-* Se for a **primeira conta** do usuário, automaticamente `is_default = true`.
-
 **Request Body**
 
 ```json
 {
-  "account_name": "Poupança Viagem",
-  "initial_balance": 0.00,
-  "is_default": false
+  "account_name": "Poupança Viagem"
 }
 ```
 
@@ -207,7 +253,6 @@
   "account_id": "9b1e7f20-2d4e-11ef-bf4b-123456789abc",
   "account_name": "Poupança Viagem",
   "balance": 0.00,
-  "is_default": false,
   "created_at": "2025-10-17T22:00:00Z"
 }
 ```
@@ -216,9 +261,8 @@
 
 | Código | Motivo                                              |
 | ------ | --------------------------------------------------- |
-| 400    | Dados inválidos (ex.: nome vazio, balance negativo) |
+| 400    | Dados inválidos (ex.: nome vazio) |
 | 401    | Token inválido ou expirado                          |
-| 409    | Nome de conta já existe para o usuário (opcional)   |
 | 500    | Erro interno do servidor                            |
 
 ---
@@ -230,10 +274,6 @@
 **Descrição:** Exclui a conta especificada do usuário autenticado.
 **Atenção:** Requer token JWT.
 
-**Regras sugeridas:**
-
-* Não permitir exclusão se `is_default = true` (exigir trocar padrão antes).
-* Não permitir exclusão se houver saldo ou investimentos (exigir zerar previamente ou migrar).
 
 **Response 204**
 *(sem corpo)*
@@ -242,7 +282,6 @@
 
 | Código | Motivo                                                          |
 | ------ | --------------------------------------------------------------- |
-| 400    | Conta não pode ser excluída (ex.: saldo > 0, tem investimentos) |
 | 401    | Token inválido ou expirado                                      |
 | 403    | Usuário não tem permissão para excluir esta conta               |
 | 404    | Conta não encontrada                                            |
@@ -257,6 +296,8 @@
 ### *GET /accounts/{id}/wallet*
 
 **Descrição:** Retorna o saldo e o histórico de movimentações (saques e depósitos) da conta.
+
+**Atenção:** Requer token JWT.
 
 **Response 200**
 
@@ -284,6 +325,8 @@
 
 | Código | Motivo                   |
 | ------ | ------------------------ |
+| 401    | Token inválido           |
+| 403    | Usuário não pode visualizar carteira da conta solicitada |
 | 404    | Conta não encontrada     |
 | 500    | Erro interno do servidor |
 
@@ -294,6 +337,8 @@
 ### *POST /accounts/{id}/wallet/transactions*
 
 **Descrição:** Cadastra uma movimentação de depósito ou saque na conta.
+
+**Atenção:** Requer token JWT.
 
 **Request Body**
 
@@ -320,100 +365,182 @@
 
 | Código | Motivo                        |
 | ------ | ----------------------------- |
-| 400    | Tipo de movimentação inválido |
-| 403    | Saldo insuficiente            |
+| 400    | Corpo inválido |
+| 401    | Token inválido                |
 | 404    | Conta não encontrada          |
+| 422    | Saldo insuficiente            |
 | 500    | Erro interno do servidor      |
 
 ---
 
-## **4. Crypto**
+## **4. Assets**
 
-### *GET /accounts/{id}/crypto*
+### 4.1 Retorna os ativos disponíveis.
 
-**Descrição:** Retorna as criptomoedas da conta.
+### *GET /assets*
 
+**Descrição:** Retorna os ativos disponíveis no site.
+
+**OBS:** Tem suporte a filtras por parâmetros como tipo e paginação, a URL completa poderá ser assim:
+```
+http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypto
+```
 **Response 200**
 
 ```json
-[
-  {
-    "symbol": "BTC",
-    "name": "Bitcoin",
-    "quantity": 0.02,
-    "purchase_value": 1200.0,
-    "created_at" : "2025-10-15T12:00:00"
-  }
-]
+{
+  "assets": [
+    {
+      "asset_id" : "3e67f35b-9169-47f2-b51e-f166345026c2",
+      "asset_type": "crypto",
+      "asset_name": "Bitcoin",
+      "asset_symbol" : "BTC",
+      "current_price": 618540.95,
+      "market_cap" : 2305300302602,
+      "market_sector" : "payments"
+    },
+    {
+      "asset_id" : "0d95486e-0846-42dd-8d07-6a7452619e7b",
+      "asset_type": "crypto",
+      "asset_name" : "Ether",
+      "asset_symbol" : "ETH",
+      "current_price": 22582.84,
+      "market_cap" : 507048331030.67,
+      "market_sector" : "platforms"
+    }
+  ],
+  "page": 0,
+  "size": 10,
+  "totalElements": 115,
+  "totalPages": 12,
+  "last": false,
+  "first": true,
+  "numberOfElements": 2
+}
 ```
 
 #### Erros possíveis
 
 | Código | Motivo                           |
 | ------ | -------------------------------- |
+| 500    | Erro interno do servidor  |
+
+---
+
+
+
+## **5. Investments**
+
+### 5.1 Retorna os investimentos da conta.
+
+### *GET /accounts/{id}/investments*
+
+**Descrição:** Retorna os investimentos feitos na conta.
+
+**Atenção:** Requer token JWT.
+
+**Response 200**
+
+```json
+{
+  "investments": [
+    {
+      "investment_id" : "1383bdf0-989c-4365-a4c4-088f3ce451ca",
+      "asset_type": "crypto",
+      "asset_name": "Bitcoin",
+      "amount": 0.002,
+      "purchase_price": 200.0,
+      "current_price": 618540.95,
+      "created_at": "2025-10-12T10:00:00"
+    },
+    {
+      "investment_id" : "a77858a5-c00c-4476-8277-83541fbbcb81",
+      "asset_name" : "BBAS3",
+      "asset_type": "stock",
+      "amount": 2.0,
+      "purchase_price": 41.22,
+      "current_price": 20.61,
+      "created_at": "2025-10-15T15:15:00"
+    }
+  ]
+}
+```
+
+#### Erros possíveis
+
+| Código | Motivo                           |
+| ------ | -------------------------------- |
+| 401    | Token inválido                   |
 | 404    | Conta não encontrada |
 
 ---
 
-## **5. Stocks**
+### 5.2 Cria novo investimento na conta.
 
-### *GET /accounts/{id}/stocks*
+### *POST /accounts/{id}/investments*
 
-**Descrição:** Retorna as ações compradas na conta.
+**Descrição:** Cria um novo investimento na conta;
 
-**Response 200**
+**Atenção:** Requer token JWT.
+
+**Request Body**
 
 ```json
-[
-  {
-    "symbol": "AAPL",
-    "name": "Apple Inc.",
-    "quantity": 10,
-    "purchase_value": 1750.0,
-    "created_at" : "2025-10-18T16:00:00"
-  }
-]
+{
+    "asset_name" : "BBAS3",
+    "asset_type": "stock",
+    "amount": 2.0,
+    "purchase_price": 41.22,
+}
+```
+
+**Response 201**
+
+```json
+{
+    "asset_name" : "BBAS3",
+    "asset_type": "stock",
+    "amount": 2.0,
+    "purchase_price": 41.22,
+    "created_at": "2025-10-15T15:15:00"
+}
 ```
 
 #### Erros possíveis
 
-| Código | Motivo                          |
-| ------ | ------------------------------- |
-| 404    | Conta não encontrada            |
+| Código | Motivo                           |
+| ------ | -------------------------------- |
+| 401    | Token inválido            |
+| 404    | Conta não encontrada          |
+| 422    | Saldo insuficiente            |
+| 500    | Erro interno do servidor      |
 
 ---
 
-## **6. Currencies**
+### 5.3 Excluir investimento da conta.
 
-### *GET /accounts/{id}/currencies*
+### *DELETE /accounts/{account_id}/investments/{investment_id}*
 
-**Descrição:** Retorna as moedas estrangeiras adquiridas na conta.
+**Descrição:** Exclui o investimneto especificado da conta logada.
 
-**Response 200**
+**Atenção:** Requer token JWT.
 
-```json
-[
-  {
-    "symbol": "USD",
-    "name": "Dólar Americano",
-    "quantity": 200,
-    "purchase_value": 980.0,
-    "created_at" : "2025-10-14T16:00:00"
-  }
-]
-```
+**Response 204**
+*(sem corpo)*
 
 #### Erros possíveis
 
-| Código | Motivo                     |
-| ------ | -------------------------- |
-| 404    | Conta não encontrada       |
+| Código | Motivo                                                          |
+| ------ | --------------------------------------------------------------- |
+| 401    | Token inválido               |
+| 404    | Investimento não encontrado  |
+| 500    | Erro interno do servidor     |
 
 ---
 
-## **7. Cursos**
+## **6. Cursos**
 
-### 7.1 Listar cursos disponíveis
+### 6.1 Listar cursos disponíveis
 
 ### *GET /courses*
 
@@ -427,14 +554,15 @@
     "course_id": "a12f5670-2d4e-11ef-bf4b-123456789abc",
     "title": "Introdução aos Investimentos",
     "summary": "Aprenda os fundamentos essenciais para começar a investir com segurança.",
-    "thumbnail": "https://cdn.veyto.com/images/course1.png"
+    "level" : "basico",
+    "thumbnail": "https://cdn.borainvestir.b3.com.br/2024/04/17112249/fundos-de-investimentos-como-escolher.jpg"
   }
 ]
 ```
 
 ---
 
-### 7.2 Detalhar curso e listar aulas
+### 6.2 Detalhar curso e listar aulas
 
 ### *GET /courses/{id}*
 
@@ -447,11 +575,27 @@
   "course_id": "a12f5670-2d4e-11ef-bf4b-123456789abc",
   "title": "Introdução aos Investimentos",
   "description": "Curso completo para aprender sobre tipos de investimento, riscos e rentabilidade.",
-  "thumbnail": "https://cdn.veyto.com/images/course1.png",
+  "thumbnail": "https://cdn.borainvestir.b3.com.br/2024/04/17112249/fundos-de-investimentos-como-escolher.jpg",
   "level" : "basico",
   "lessons": [
-    { "lesson_id": "1", "title": "O que é investimento?" },
-    { "lesson_id": "2", "title": "Perfil do investidor" }
+    { 
+      "lesson_id": 1,
+      "title": "O que é investimento?",
+      "video_url" : "https://youtu.be/Mca-HLZkaB8?si=95M8eDyMHJJMHl8R",
+      "duration" : "241",
+      "lesson_order" : "1",
+      "current_time" : "241",
+      "completed" : "true"
+    },
+    { 
+      "lesson_id": 2, 
+      "title": "Perfil do investidor",
+      "video_url" : "https://youtu.be/enDUY7pHwsU?si=66az5prpSvP-UF3z",
+      "duration" : "543",
+      "lesson_order" : 2,
+      "current_time" : 325,
+      "completed" : false
+    }
   ]
 }
 ```
@@ -462,5 +606,43 @@
 | ------ | ------------------------ |
 | 404    | Curso não encontrado     |
 | 500    | Erro interno do servidor |
+
+---
+
+
+### 6.3 Atualizar progressão da aula da conta.
+
+### *PUT /accounts/{account_id}/courses/{course_id}/lessons/{lesson_id}/progress*
+
+**Descrição:** Atualiza a progressão da aula feita pela conta logada.
+
+**Atenção:** Requer token JWT.
+
+
+**Request Body**
+
+```json
+{
+  "current_time" : 241
+}
+```
+
+**Response 200**
+
+```json
+{
+  "current_time" : 241,
+  "completed" : true
+}
+```
+
+#### Erros possíveis
+
+| Código | Motivo                           |
+| ------ | -------------------------------- |
+| 400    | Dados inválidos                  |
+| 401    |
+| 404    | Conta, Curso ou Aula não encontrados |
+| 500    | Erro interno do servidor         |
 
 ---
