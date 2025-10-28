@@ -8,7 +8,7 @@ CREATE TABLE users (
     password_hash VARCHAR2(255) NOT NULL,
     role VARCHAR2(255) NOT NULL,
     investor_level VARCHAR2(20),
-    CONSTRAINT chk_investor_level CHECK (investor_level IN ('iniciante', 'moderado', 'avancado', 'profissional')),
+    CONSTRAINT chk_investor_level CHECK (investor_level IN ('INICIANTE', 'MODERADO', 'AVANCADO', 'PROFISSIONAL')),
     CONSTRAINT uq_user_document UNIQUE (document_number),
     CONSTRAINT uq_user_email UNIQUE (email)
 );
@@ -29,7 +29,7 @@ CREATE TABLE operations (
     operation_type VARCHAR2(20) NOT NULL,
     value NUMBER(12,2) NOT NULL,
     occured_at TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT chk_operation_type CHECK (operation_type IN ('deposit', 'withdraw')),
+    CONSTRAINT chk_operation_type CHECK (operation_type IN ('DEPOSIT', 'WITHDRAW')),
     CONSTRAINT chk_operation_value CHECK (value > 0),
     CONSTRAINT fk_operation_account FOREIGN KEY (account_id) REFERENCES accounts(account_id)
 );
@@ -42,7 +42,7 @@ CREATE TABLE assets (
     current_price NUMBER(12,2) NOT NULL,
     market_sector VARCHAR2(255),
     market_cap NUMBER(20,4),
-    CONSTRAINT chk_asset_type CHECK (asset_type IN ('crypto', 'stock', 'currencies')),
+    CONSTRAINT chk_asset_type CHECK (asset_type IN ('CRYPTO', 'STOCK', 'CURRENCIES')),
     CONSTRAINT uq_asset_symbol UNIQUE (symbol)
 );
 
@@ -68,7 +68,7 @@ CREATE TABLE courses (
     level VARCHAR2(20),
     thumbnail VARCHAR2(500),
     created_at TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT chk_course_level CHECK (level IN ('basico', 'intermediario', 'avancado')),
+    CONSTRAINT chk_course_level CHECK (level IN ('BASICO', 'INTERMEDIARIO', 'AVANCADO')),
     CONSTRAINT uq_course_title UNIQUE (title)
 );
 

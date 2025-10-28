@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AccountService {
-    Account create(CreateAccountRequest account);
+    Account create(String id, CreateAccountRequest account);
 
     Account update(String accountId, UpdateAccountRequest account);
 

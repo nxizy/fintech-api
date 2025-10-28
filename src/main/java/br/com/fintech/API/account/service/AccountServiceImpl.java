@@ -14,25 +14,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
     @Override
-    public Account create(CreateAccountRequest request) {
-        User user = securityUtils.getCurrentUser();
+    public Account create(String userid, CreateAccountRequest request) {
         if(request.getName() == null || request.getName().isBlank()) throw new InvalidRequestException("Account name is required");
+        User user = userRepository.findById(userid).orElseThrow(() -> new AccessDeniedException("User not found"));
         Account account = Account.builder()
                 .user(user)
                 .name(request.getName())
+                .balance(0.0)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return accountRepository.save(account);

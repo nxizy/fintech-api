@@ -174,16 +174,43 @@
 **Response 200**
 
 ```json
-[
-  {
-    "account_id": "6e54e570-2d4e-11ef-bf4b-123456789abc",
-    "account_name": "Pessoal"
+{
+  "content": [
+    {
+      "account_id": "6e54e570-2d4e-11ef-bf4b-123456789abc",
+      "account_name": "Pessoal"
+    },
+    {
+      "account_id": "7a7a6780-2d4e-11ef-bf4b-123456789abc",
+      "account_name": "Investimentos"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10,
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "unpaged": false,
+    "paged": true
   },
-  {
-    "account_id": "7a7a6780-2d4e-11ef-bf4b-123456789abc",
-    "account_name": "Investimentos"
-  }
-]
+  "last": true,
+  "totalElements": 0,
+  "totalPages": 0,
+  "first": true,
+  "size": 10,
+  "number": 0,
+  "numberOfElements": 0,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "empty": true
+}
 ```
 
 #### Erros possíveis
@@ -215,7 +242,10 @@
 
 ```json
 {
-  "name" : "Empresa"
+  "id": "fa7004e2-3c45-4bd3-b201-a7f9b58de8bf",
+  "name": "Empresa",
+  "balance": null,
+  "createdAt": null
 }
 ```
 
@@ -242,7 +272,7 @@
 
 ```json
 {
-  "account_name": "Poupança Viagem"
+  "name": "Poupança Viagem"
 }
 ```
 
@@ -250,10 +280,10 @@
 
 ```json
 {
-  "account_id": "9b1e7f20-2d4e-11ef-bf4b-123456789abc",
-  "account_name": "Poupança Viagem",
-  "balance": 0.00,
-  "created_at": "2025-10-17T22:00:00Z"
+  "id": "fa7004e2-3c45-4bd3-b201-a7f9b58de8bf",
+  "name": "Pessoal",
+  "balance": 0.0,
+  "createdAt": "2025-10-28T09:57:10.15959"
 }
 ```
 

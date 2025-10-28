@@ -13,7 +13,4 @@ import lombok.*;
 public class UpdateAccountRequest {
     @Schema(description = "name", example = "personal")
     private String name;
-
-    @Schema(description = "balance", example = "1.2")
-    private Double balance;
 }

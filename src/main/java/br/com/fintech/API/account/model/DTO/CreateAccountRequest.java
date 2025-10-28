@@ -13,7 +13,4 @@ public class CreateAccountRequest {
 
     @NotBlank
     private String name;
-
-    @NotBlank
-    private String userId;
 }
