@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -16,12 +14,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "TB_OPERATION")
+@Table(name = "OPERATIONS")
 public class Operation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "operation_id")
+    @Column(name = "operation_id", length = 36)
     private UUID operationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,9 +31,9 @@ public class Operation {
     private OperationType type;
 
     @Column(nullable = false)
-    private BigDecimal amount;
+    private Double amount;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "occured_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

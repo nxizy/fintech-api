@@ -12,7 +12,6 @@ import br.com.fintech.API.wallet.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,8 +50,7 @@ public class WalletService {
     //Endpoint 3.2: POST /accounts/{id}/wallet/transactions
     @Transactional
     public WalletTransactionResponseDTO createTransaction(UUID accountId, WalletTransactionRequestDTO request) {
-        // Validações
-        if (request.amount() == null || request.amount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (request.amount() == null || request.amount() <= 0.0) {
             throw new BadRequestException("O valor (amount) deve ser positivo.");
         }
         if (request.type() == null) {
@@ -62,30 +60,17 @@ public class WalletService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
 
-        // Lógica de Saldo
-        BigDecimal newBalance;
-        if (request.type() == OperationType.DEPOSIT) {
-            newBalance = account.getBalance().add(request.amount());
-        } else if (request.type() == OperationType.WITHDRAWAL) {
-            if (account.getBalance().compareTo(request.amount()) < 0) {
-                throw new InsufficientFundsException("Saldo insuficiente");
-            }
-            newBalance = account.getBalance().subtract(request.amount());
-        } else {
-            throw new BadRequestException("Tipo de movimentação inválido");
-        }
+        double newBalance = getNewBalance(request, account);
 
         account.setBalance(newBalance);
         accountRepository.save(account);
 
-        // Cria e salva a operação
         Operation newOperation = new Operation();
         newOperation.setAccount(account);
         newOperation.setType(request.type());
         newOperation.setAmount(request.amount());
         Operation savedOperation = operationRepository.save(newOperation);
 
-        // Retorna DTO de resposta
         return new WalletTransactionResponseDTO(
                 savedOperation.getOperationId(),
                 savedOperation.getType(),
@@ -93,5 +78,20 @@ public class WalletService {
                 savedOperation.getCreatedAt(),
                 newBalance
         );
+    }
+
+    private static double getNewBalance(WalletTransactionRequestDTO request, Account account) {
+        double newBalance;
+        if (request.type() == OperationType.DEPOSIT) {
+            newBalance = account.getBalance() + request.amount();
+        } else if (request.type() == OperationType.WITHDRAWAL) {
+            if (account.getBalance() < request.amount()) {
+                throw new InsufficientFundsException("Saldo insuficiente");
+            }
+            newBalance = account.getBalance() - request.amount();
+        } else {
+            throw new BadRequestException("Tipo de movimentação inválido");
+        }
+        return newBalance;
     }
 }

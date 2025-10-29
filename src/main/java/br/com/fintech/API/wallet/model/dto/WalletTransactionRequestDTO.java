@@ -1,9 +1,8 @@
-package br.com.fintech.API.wallet.model.dto; // Caminho atualizado
+package br.com.fintech.API.wallet.model.dto;
+import br.com.fintech.API.wallet.model.enums.OperationType;
 
-import br.com.fintech.API.wallet.model.enums.OperationType; // Import do novo caminho do Enum
-import java.math.BigDecimal;
 
 public record WalletTransactionRequestDTO(
         OperationType type,
-        BigDecimal amount
+        Double amount
 ) {}

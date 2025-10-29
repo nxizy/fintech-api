@@ -1,14 +1,13 @@
-package br.com.fintech.API.wallet.model.dto; // Caminho atualizado
+package br.com.fintech.API.wallet.model.dto;
 
-import br.com.fintech.API.wallet.model.enums.OperationType; // Import do novo caminho do Enum
-import java.math.BigDecimal;
+import br.com.fintech.API.wallet.model.enums.OperationType;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record WalletTransactionResponseDTO(
         UUID operation_id,
         OperationType type,
-        BigDecimal amount,
+        Double amount,
         LocalDateTime created_at,
-        BigDecimal balance_after
+        Double balance_after
 ) {}
