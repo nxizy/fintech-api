@@ -33,8 +33,6 @@ public class CreateUserRequest{
     @NotBlank
     private String password;
 
-    @NotNull
-    private UserRole userRole;
 
     private InvestorLevel investorLevel;
 }

@@ -4,6 +4,7 @@ import br.com.fintech.API.infra.exceptions.ConflictException;
 import br.com.fintech.API.infra.exceptions.EmailAlreadyExistsException;
 import br.com.fintech.API.user.model.User;
 import br.com.fintech.API.user.model.dto.user.CreateUserRequest;
+import br.com.fintech.API.user.model.enums.UserRole;
 import br.com.fintech.API.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,7 +38,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
                 .birthDate(data.getBirthDate())
                 .email(data.getEmail().trim().toLowerCase())
                 .password(encryptedPassword)
-                .userRole(data.getUserRole())
+                .userRole(UserRole.AUTHORIZED)
                 .investorLevel(data.getInvestorLevel())
                 .build();
 
