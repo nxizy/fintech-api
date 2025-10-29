@@ -75,7 +75,6 @@
   "birthDate": "2007-02-21",
   "email": "email2luiz@gmail.com",
   "password": "password",
-  "userRole" : "AUTHORIZED",
   "investorLevel": "AVANCADO"
 }
 ```
