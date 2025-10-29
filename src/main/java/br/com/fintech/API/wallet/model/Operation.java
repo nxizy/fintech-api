@@ -1,7 +1,7 @@
-package br.com.fintech.API.wallet.model; // Caminho atualizado
+package br.com.fintech.API.wallet.model;
 
-import br.com.fintech.API.account.model.Account; // Dependência da pasta 'account'
-import br.com.fintech.API.wallet.model.enums.OperationType; // Import do novo caminho do Enum
+import br.com.fintech.API.account.model.Account;
+import br.com.fintech.API.wallet.model.enums.OperationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
