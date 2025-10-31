@@ -2,7 +2,7 @@
 
 # Índice
 
-- [Login](#1-login)
+- [Usuário](#1-autenticação)
 - [Contas](#2-contas)
 - [Wallet](#3-wallet)
 - [Crypto](#4-crypto)
@@ -410,9 +410,9 @@
 
 **Descrição:** Retorna os ativos disponíveis no site.
 
-**OBS:** Tem suporte a filtras por parâmetros como tipo e paginação, a URL completa poderá ser assim:
+**OBS:** Tem suporte a filtros por parâmetros como tipo e paginação, a URL completa poderá ser assim:
 ```
-http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypto
+http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 ```
 **Response 200**
 
@@ -422,8 +422,8 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
     {
       "asset_id" : "3e67f35b-9169-47f2-b51e-f166345026c2",
       "asset_type": "crypto",
-      "asset_name": "Bitcoin",
-      "asset_symbol" : "BTC",
+      "name": "Bitcoin",
+      "symbol" : "BTC",
       "current_price": 618540.95,
       "market_cap" : 2305300302602,
       "market_sector" : "payments"
@@ -431,8 +431,8 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
     {
       "asset_id" : "0d95486e-0846-42dd-8d07-6a7452619e7b",
       "asset_type": "crypto",
-      "asset_name" : "Ether",
-      "asset_symbol" : "ETH",
+      "name" : "Ether",
+      "symbol" : "ETH",
       "current_price": 22582.84,
       "market_cap" : 507048331030.67,
       "market_sector" : "platforms"
