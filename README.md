@@ -5,7 +5,7 @@
 - [Usuário](#1-autenticação)
 - [Contas](#2-contas)
 - [Wallet](#3-wallet)
-- [Crypto](#4-crypto)
+- [Crypto](#4-assets)
 - [Stocks](#5-stocks)
 - [Currencies](#6-currencies)
 - [Cursos](#7-cursos)

@@ -4,6 +4,7 @@ import br.com.fintech.API.account.model.Account;
 import br.com.fintech.API.wallet.model.enums.OperationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "OPERATIONS")
 public class Operation {
@@ -20,17 +22,17 @@ public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "operation_id", length = 36)
-    private UUID operationId;
+    private String operationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "operation_type",nullable = false, length = 20)
     private OperationType type;
 
-    @Column(nullable = false)
+    @Column(name = "value",nullable = false)
     private Double amount;
 
     @CreationTimestamp

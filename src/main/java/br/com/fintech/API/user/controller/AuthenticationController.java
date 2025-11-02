@@ -52,7 +52,7 @@ public class AuthenticationController {
             List<AccountResponseDTO> accounts = Optional.ofNullable(user.getAccounts())
                     .orElse(Collections.emptyList())
                     .stream()
-                    .map(a -> new AccountResponseDTO(a.getId(), a.getName()))
+                    .map(a -> new AccountResponseDTO(a.getId(), a.getName(), a.getBalance(), a.getCreatedAt()))
                     .toList();
             LoginResponseDTO response = new LoginResponseDTO(token, user.toUserResponse(), accounts);
             return ResponseEntity.ok(response);
