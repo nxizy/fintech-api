@@ -10,4 +10,6 @@ import java.util.UUID;
 
 public interface AssetRepository extends JpaRepository<Asset, String> {
     Page<Asset> findByAssetType(AssetType assetType, Pageable pageable);
+
+    Asset findByName(String name);
 }
