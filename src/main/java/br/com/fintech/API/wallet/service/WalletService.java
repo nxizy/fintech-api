@@ -5,36 +5,40 @@ import br.com.fintech.API.account.repository.AccountRepository;
 import br.com.fintech.API.infra.exceptions.BadRequestException;
 import br.com.fintech.API.infra.exceptions.InsufficientFundsException;
 import br.com.fintech.API.infra.exceptions.ResourceNotFoundException;
+import br.com.fintech.API.user.model.enums.InvestorLevel;
 import br.com.fintech.API.wallet.model.Operation;
 import br.com.fintech.API.wallet.model.enums.OperationType;
 import br.com.fintech.API.wallet.model.dto.*;
 import br.com.fintech.API.wallet.repository.OperationRepository;
+import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class WalletService {
 
     private final AccountRepository accountRepository;
     private final OperationRepository operationRepository;
 
-    @Autowired
-    public WalletService(AccountRepository accountRepository, OperationRepository operationRepository) {
-        this.accountRepository = accountRepository;
-        this.operationRepository = operationRepository;
-    }
 
     //Endpoint 3.1: GET /accounts/{id}/wallet
     @Transactional(readOnly = true)
-    public WalletResponseDTO getWalletDetails(UUID accountId) {
+    public WalletResponseDTO getWalletDetails(String accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
 
-        List<Operation> operations = operationRepository.findByAccount_AccountIdOrderByCreatedAtDesc(accountId);
+        List<Operation> operations = operationRepository.findByAccount_IdOrderByCreatedAtDesc(account.getId());
 
         List<OperationDTO> operationDTOs = operations.stream()
                 .map(op -> new OperationDTO(
@@ -49,7 +53,7 @@ public class WalletService {
 
     //Endpoint 3.2: POST /accounts/{id}/wallet/transactions
     @Transactional
-    public WalletTransactionResponseDTO createTransaction(UUID accountId, WalletTransactionRequestDTO request) {
+    public WalletTransactionResponseDTO createTransaction(String accountId, WalletTransactionRequestDTO request) {
         if (request.amount() == null || request.amount() <= 0.0) {
             throw new BadRequestException("O valor (amount) deve ser positivo.");
         }
@@ -57,18 +61,26 @@ public class WalletService {
             throw new BadRequestException("O tipo (type) é obrigatório.");
         }
 
+        if (Arrays.stream(OperationType.values())
+                .noneMatch(type -> type.name().equalsIgnoreCase(String.valueOf(request.type())))) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Tipo de movimentação inválido");
+        }
+
+
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Conta não encontrada"));
 
         double newBalance = getNewBalance(request, account);
 
         account.setBalance(newBalance);
         accountRepository.save(account);
 
-        Operation newOperation = new Operation();
-        newOperation.setAccount(account);
-        newOperation.setType(request.type());
-        newOperation.setAmount(request.amount());
+        Operation newOperation = Operation.builder()
+                .account(account)
+                .amount(request.amount())
+                .type(request.type())
+                .createdAt(LocalDateTime.now())
+                .build();
         Operation savedOperation = operationRepository.save(newOperation);
 
         return new WalletTransactionResponseDTO(
@@ -84,9 +96,9 @@ public class WalletService {
         double newBalance;
         if (request.type() == OperationType.DEPOSIT) {
             newBalance = account.getBalance() + request.amount();
-        } else if (request.type() == OperationType.WITHDRAWAL) {
+        } else if (request.type() == OperationType.WITHDRAW) {
             if (account.getBalance() < request.amount()) {
-                throw new InsufficientFundsException("Saldo insuficiente");
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"Saldo insuficiente");
             }
             newBalance = account.getBalance() - request.amount();
         } else {

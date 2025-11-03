@@ -8,6 +8,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -51,4 +54,26 @@ public class GlobalExceptionHandler {
         String errorMessage = "A requisição está com o JSON mal-formado ou ilegível.";
         return handleInvalidRequestException(new InvalidRequestException(errorMessage));
     }
+}
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatus(ResponseStatusException ex) {
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(Map.of(
+                        "status", ex.getStatusCode().value(),
+                        "error", ex.getReason()
+                ));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleJsonParseError(HttpMessageNotReadableException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(Map.of(
+                        "status", 422,
+                        "error", "Invalid request body or enum value",
+                        "details", ex.getMostSpecificCause().getMessage()
+                ));
+    }
+
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record WalletTransactionResponseDTO(
-        UUID operation_id,
+        String operation_id,
         OperationType type,
         Double amount,
         LocalDateTime created_at,

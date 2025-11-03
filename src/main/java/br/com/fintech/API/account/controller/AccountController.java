@@ -42,7 +42,7 @@ public class AccountController {
         Pageable pageable = PageRequest.of(page, size);
         Page<AccountResponseDTO> accountsPage = accountService
                 .getAccountsByUserId(user.getId(), pageable)
-                .map(a -> new AccountResponseDTO(a.getId(), a.getName()));
+                .map(a -> new AccountResponseDTO(a.getId(), a.getName(), a.getBalance(), a.getCreatedAt()));
         return ResponseEntity.ok(accountsPage);
     }
 

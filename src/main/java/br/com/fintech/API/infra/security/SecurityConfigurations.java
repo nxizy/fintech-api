@@ -40,6 +40,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/accounts").hasAuthority("AUTHORIZED")
                         .requestMatchers(HttpMethod.POST, "/accounts").hasAuthority("AUTHORIZED")
                         .requestMatchers(HttpMethod.DELETE, "/accounts").hasAuthority("AUTHORIZED")
+                        .requestMatchers(HttpMethod.GET, "/assets").hasAuthority("AUTHORIZED")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

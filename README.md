@@ -2,13 +2,12 @@
 
 # Índice
 
-- [Login](#1-login)
+- [Usuário](#1-autenticação)
 - [Contas](#2-contas)
 - [Wallet](#3-wallet)
-- [Crypto](#4-crypto)
-- [Stocks](#5-stocks)
-- [Currencies](#6-currencies)
-- [Cursos](#7-cursos)
+- [Assets](#4-assets)
+- [Investments](#5-investments)
+- [Courses](#6-courses)
 
 
 ## **1. Autenticação**
@@ -241,10 +240,10 @@
 
 ```json
 {
-  "id": "fa7004e2-3c45-4bd3-b201-a7f9b58de8bf",
+  "id": "7a7a6780-2d4e-11ef-bf4b-123456789abc",
   "name": "Empresa",
-  "balance": null,
-  "createdAt": null
+  "balance": 0.0,
+  "createdAt": "2025-10-28T09:57:10.15959"
 }
 ```
 
@@ -280,7 +279,7 @@
 ```json
 {
   "id": "fa7004e2-3c45-4bd3-b201-a7f9b58de8bf",
-  "name": "Pessoal",
+  "name": "Poupança Viagem",
   "balance": 0.0,
   "createdAt": "2025-10-28T09:57:10.15959"
 }
@@ -410,9 +409,9 @@
 
 **Descrição:** Retorna os ativos disponíveis no site.
 
-**OBS:** Tem suporte a filtras por parâmetros como tipo e paginação, a URL completa poderá ser assim:
+**OBS:** Tem suporte a filtros por parâmetros como tipo e paginação, a URL completa poderá ser assim:
 ```
-http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypto
+http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 ```
 **Response 200**
 
@@ -422,8 +421,8 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
     {
       "asset_id" : "3e67f35b-9169-47f2-b51e-f166345026c2",
       "asset_type": "crypto",
-      "asset_name": "Bitcoin",
-      "asset_symbol" : "BTC",
+      "name": "Bitcoin",
+      "symbol" : "BTC",
       "current_price": 618540.95,
       "market_cap" : 2305300302602,
       "market_sector" : "payments"
@@ -431,8 +430,8 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
     {
       "asset_id" : "0d95486e-0846-42dd-8d07-6a7452619e7b",
       "asset_type": "crypto",
-      "asset_name" : "Ether",
-      "asset_symbol" : "ETH",
+      "name" : "Ether",
+      "symbol" : "ETH",
       "current_price": 22582.84,
       "market_cap" : 507048331030.67,
       "market_sector" : "platforms"
@@ -464,7 +463,7 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
 
 ### *GET /accounts/{id}/investments*
 
-**Descrição:** Retorna os investimentos feitos na conta.
+**Descrição:** Retorna os investimentos feitos na conta. O "amount" e o "purchase_price" são dados sobre a quantidade e o valor do investimento feito, e o "current_price" é o valor atual de uma unidade do ativo adquirido.
 
 **Atenção:** Requer token JWT.
 
@@ -475,18 +474,18 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
   "investments": [
     {
       "investment_id" : "1383bdf0-989c-4365-a4c4-088f3ce451ca",
+      "amount": 0.002,
       "asset_type": "crypto",
       "asset_name": "Bitcoin",
-      "amount": 0.002,
       "purchase_price": 200.0,
       "current_price": 618540.95,
       "created_at": "2025-10-12T10:00:00"
     },
     {
       "investment_id" : "a77858a5-c00c-4476-8277-83541fbbcb81",
+      "amount": 2.0,
       "asset_name" : "BBAS3",
       "asset_type": "stock",
-      "amount": 2.0,
       "purchase_price": 41.22,
       "current_price": 20.61,
       "created_at": "2025-10-15T15:15:00"
@@ -517,9 +516,8 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
 ```json
 {
     "asset_name" : "BBAS3",
-    "asset_type": "stock",
     "amount": 2.0,
-    "purchase_price": 41.22,
+    "purchase_price": 41.22
 }
 ```
 
@@ -527,9 +525,9 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
 
 ```json
 {
+    "amount": 2.0,
     "asset_name" : "BBAS3",
     "asset_type": "stock",
-    "amount": 2.0,
     "purchase_price": 41.22,
     "created_at": "2025-10-15T15:15:00"
 }
@@ -538,7 +536,8 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
 #### Erros possíveis
 
 | Código | Motivo                           |
-| ------ | -------------------------------- |
+|--------| -------------------------------- |
+| 400    | Quantidade e valor devem ser positivos |
 | 401    | Token inválido            |
 | 404    | Conta não encontrada          |
 | 422    | Saldo insuficiente            |
@@ -550,7 +549,7 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
 
 ### *DELETE /accounts/{account_id}/investments/{investment_id}*
 
-**Descrição:** Exclui o investimneto especificado da conta logada.
+**Descrição:** Exclui o investimento especificado da conta logada. (Funciona também como saque do valor do investimento, já que calcula a quantidade sobre o preço atual e "deposita" na conta)
 
 **Atenção:** Requer token JWT.
 
@@ -567,7 +566,7 @@ http://localhost:8080/assets?page=0&size=10&sort=asset_name,asc&asset_type=crypt
 
 ---
 
-## **6. Cursos**
+## **6. Courses**
 
 ### 6.1 Listar cursos disponíveis
 

@@ -80,8 +80,7 @@ CREATE TABLE investments (
                              CONSTRAINT chk_investment_amount CHECK (amount > 0),
                              CONSTRAINT chk_investment_price CHECK (purchase_price > 0),
                              CONSTRAINT fk_investment_account FOREIGN KEY (account_id) REFERENCES accounts(account_id),
-                             CONSTRAINT fk_investment_asset FOREIGN KEY (asset_id) REFERENCES assets(asset_id),
-                             CONSTRAINT uq_investment_asset UNIQUE (account_id, asset_id)
+                             CONSTRAINT fk_investment_asset FOREIGN KEY (asset_id) REFERENCES assets(asset_id)
 );
 
 CREATE TABLE account_lesson_progress (
