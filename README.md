@@ -90,6 +90,8 @@ Lá estarão listados todos os endpoints disponíveis da API, com exemplos e par
 
 **Todos os endpoints (exceto /auth/register e /auth/login) requerem o header Authorization: Bearer {token}**
 
+---
+
 # Índice
 
 - [Autenticação](#1-autenticação)
