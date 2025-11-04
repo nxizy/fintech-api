@@ -29,10 +29,6 @@ O projeto utiliza:
 - `lombok` → Redução de boilerplate
 ---
 
-Perfeito 👍
-Aqui vai a **seção completa “Como executar o projeto”**, ajustada pro teu setup (sem Flyway e usando Oracle):
-
----
 
 ## Como executar o projeto
 
