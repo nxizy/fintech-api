@@ -49,12 +49,6 @@ public class GlobalExceptionHandler {
         return handleInvalidRequestException(new InvalidRequestException(errorMessage));
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleMalformedJsonException(HttpMessageNotReadableException e) {
-        String errorMessage = "A requisição está com o JSON mal-formado ou ilegível.";
-        return handleInvalidRequestException(new InvalidRequestException(errorMessage));
-    }
-}
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatus(ResponseStatusException ex) {
         return ResponseEntity

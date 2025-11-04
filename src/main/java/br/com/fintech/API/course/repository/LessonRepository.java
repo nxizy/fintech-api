@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface LessonRepository extends JpaRepository<Lesson, Long> {
+public interface LessonRepository extends JpaRepository<Lesson, String> {
 
-    Optional<Lesson> findByIdAndCourse_Id(Long lessonId, UUID courseId);
+    Optional<Lesson> findByIdAndCourse_IdOrderByLessonOrderAsc(String lessonId, String courseId);
 }

@@ -1,5 +1,6 @@
 package br.com.fintech.API.account.model.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

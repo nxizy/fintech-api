@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record CourseDetailDTO(
-        UUID course_id,
+        String course_id,
         String title,
         String description,
         String thumbnail,
@@ -13,7 +13,7 @@ public record CourseDetailDTO(
 ) {
 
     public record LessonDetailDTO(
-            Long lesson_id,
+            String lesson_id,
             String title,
             String video_url,
             Integer duration,

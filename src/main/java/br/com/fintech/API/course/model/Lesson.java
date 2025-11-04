@@ -14,8 +14,9 @@ import lombok.NoArgsConstructor;
 public class Lesson {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "lesson_id")
+    private String id;
 
     @Column(nullable = false, length = 150)
     private String title;
@@ -23,7 +24,7 @@ public class Lesson {
     @Column(name = "video_url")
     private String videoUrl;
 
-    @Column(nullable = false)
+    @Column(name = "duration_in_sec",nullable = false)
     private Integer duration; // em segundos
 
     @Column(name = "lesson_order", nullable = false)

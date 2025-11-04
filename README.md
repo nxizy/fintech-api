@@ -1,8 +1,102 @@
 # Fintech - Contrato API
 
+## Visão Geral
+
+API da Fintech com módulos de autenticação, contas, manipulação de saldos, ativos, investimentos e cursos educativos.  
+> **Status:** Em desenvolvimento (v1.0.0)
+---
+
+## Pré-requisitos
+
+Antes de iniciar o projeto, verifique se você possui os seguintes requisitos instalados:
+
+- **Java 21** ou superior  
+  (O projeto utiliza o Spring Boot 3.5.6, que requer Java 17+)
+- **Maven 3.8+**
+- **Oracle Database 19c ou superior**
+    - Driver: `ojdbc11` (já incluso nas dependências)
+- **IDE recomendada:** IntelliJ IDEA (com suporte ao Maven)
+- **Porta padrão:** `8080`
+
+---
+
+### Dependências principais
+O projeto utiliza:
+- `spring-boot-starter-web` → API REST
+- `spring-boot-starter-data-jpa` → Persistência com JPA/Hibernate
+- `spring-boot-starter-security` + `java-jwt` → Autenticação JWT
+- `springdoc-openapi-starter-webmvc-ui` → Documentação Swagger UI
+- `lombok` → Redução de boilerplate
+---
+
+Perfeito 👍
+Aqui vai a **seção completa “Como executar o projeto”**, ajustada pro teu setup (sem Flyway e usando Oracle):
+
+---
+
+## Como executar o projeto
+
+### 1 -  Clonar o repositório
+```bash
+  git clone https://github.com/nxizy/fintech-api.git
+  cd fintech-api
+```
+
+### 2 - Configurar o banco de dados
+
+Este projeto utiliza a instância do Oracle da FIAP, então atualize o arquivo `application.properties` com suas credenciais:
+
+```properties
+spring.datasource.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+spring.jpa.hibernate.ddl-auto=update
+```
+
+> O `ddl-auto=update` faz o Hibernate criar e atualizar as tabelas automaticamente.
+
+---
+
+### 3 - Instalar dependências e compilar
+
+```bash
+  mvn clean install
+```
+
+---
+
+### 4 - Executar o projeto
+
+```bash
+  mvn spring-boot:run
+```
+
+A aplicação iniciará na porta padrão **8080**:
+
+```
+http://localhost:8080
+```
+
+---
+
+### 5 - Acessar a documentação Swagger
+
+Após iniciar o servidor, acesse:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+Lá estarão listados todos os endpoints disponíveis da API, com exemplos e parâmetros.
+
+---
+
+
+**Todos os endpoints (exceto /auth/register e /auth/login) requerem o header Authorization: Bearer {token}**
+
 # Índice
 
-- [Usuário](#1-autenticação)
+- [Autenticação](#1-autenticação)
 - [Contas](#2-contas)
 - [Wallet](#3-wallet)
 - [Assets](#4-assets)
@@ -331,19 +425,31 @@
 
 ```json
 {
-  "balance": 1540.75,
+  "balance": 1250.0,
   "operations": [
     {
-      "operation_id": "d93c8c30-2d4e-11ef-bf4b-123456789abc",
-      "type": "DEPOSIT",
-      "amount": 200.0,
-      "created_at": "2025-10-12T10:00:00"
+      "operation_id": "2a667ba6-fe59-496b-bd8d-43d39e06d42e",
+      "type": "deposit",
+      "amount": 550.0,
+      "created_at": "2025-11-04T16:25:48.838559"
     },
     {
-      "operation_id": "e1b77e40-2d4e-11ef-bf4b-123456789abc",
-      "type": "WITHDRAWAL",
-      "amount": 100.0,
-      "created_at": "2025-10-13T09:30:00"
+      "operation_id": "ee10a89f-5cbc-4e10-b4a3-d0790c0f46af",
+      "type": "deposit",
+      "amount": 550.0,
+      "created_at": "2025-11-02T13:51:14.642911"
+    },
+    {
+      "operation_id": "9cf8ff15-4ca3-48ea-ab0e-dedb5d92cfed",
+      "type": "withdraw",
+      "amount": 250.0,
+      "created_at": "2025-11-02T13:38:40.048176"
+    },
+    {
+      "operation_id": "633a4c76-07f2-4a92-bf93-b50290b0df84",
+      "type": "deposit",
+      "amount": 400.0,
+      "created_at": "2025-11-02T13:37:07.928512"
     }
   ]
 }
@@ -372,8 +478,8 @@
 
 ```json
 {
-  "type": "DEPOSIT",
-  "amount": 500.00
+  "type" : "DEPOSIT",
+  "amount" : 550.00
 }
 ```
 
@@ -381,11 +487,11 @@
 
 ```json
 {
-  "operation_id": "e5f23470-2d4e-11ef-bf4b-123456789abc",
-  "type": "DEPOSIT",
-  "amount": 500.0,
-  "created_at": "2025-10-15T17:00:00",
-  "balance_after": 2040.75
+  "operation_id": "2a667ba6-fe59-496b-bd8d-43d39e06d42e",
+  "type": "deposit",
+  "amount": 550.0,
+  "created_at": "2025-11-04T16:25:48.824488",
+  "balance_after": 1250.0
 }
 ```
 
@@ -417,33 +523,51 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 
 ```json
 {
-  "assets": [
+  "content": [
     {
-      "asset_id" : "3e67f35b-9169-47f2-b51e-f166345026c2",
-      "asset_type": "crypto",
+      "id": "af5f8ee9-7f1a-476b-9b5d-1b0962af309d",
       "name": "Bitcoin",
-      "symbol" : "BTC",
+      "symbol": "BTC",
+      "asset_type": "crypto",
       "current_price": 618540.95,
-      "market_cap" : 2305300302602,
-      "market_sector" : "payments"
+      "market_cap": 2.305300302602E12,
+      "market_sector": "payments"
     },
     {
-      "asset_id" : "0d95486e-0846-42dd-8d07-6a7452619e7b",
+      "id": "9073c358-d07b-4c42-8d2f-ddc690272c55",
+      "name": "Ether",
+      "symbol": "ETH",
       "asset_type": "crypto",
-      "name" : "Ether",
-      "symbol" : "ETH",
       "current_price": 22582.84,
-      "market_cap" : 507048331030.67,
-      "market_sector" : "platforms"
+      "market_cap": 5.0704833103067E11,
+      "market_sector": "platforms"
     }
   ],
-  "page": 0,
-  "size": 10,
-  "totalElements": 115,
-  "totalPages": 12,
-  "last": false,
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10,
+    "sort": {
+      "sorted": true,
+      "unsorted": false,
+      "empty": false
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": true,
+  "totalElements": 2,
+  "totalPages": 1,
   "first": true,
-  "numberOfElements": 2
+  "sort": {
+    "sorted": true,
+    "unsorted": false,
+    "empty": false
+  },
+  "numberOfElements": 2,
+  "size": 10,
+  "number": 0,
+  "empty": false
 }
 ```
 
@@ -471,26 +595,49 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 
 ```json
 {
-  "investments": [
+  "content": [
     {
-      "investment_id" : "1383bdf0-989c-4365-a4c4-088f3ce451ca",
       "amount": 0.002,
-      "asset_type": "crypto",
+      "investment_id": "b1ef08cd-c219-43e4-99a1-937206eba4c1",
       "asset_name": "Bitcoin",
+      "asset_type": "crypto",
       "purchase_price": 200.0,
-      "current_price": 618540.95,
-      "created_at": "2025-10-12T10:00:00"
+      "created_at": "2025-11-03T16:38:39.071934"
     },
     {
-      "investment_id" : "a77858a5-c00c-4476-8277-83541fbbcb81",
-      "amount": 2.0,
-      "asset_name" : "BBAS3",
-      "asset_type": "stock",
-      "purchase_price": 41.22,
-      "current_price": 20.61,
-      "created_at": "2025-10-15T15:15:00"
+      "amount": 0.004,
+      "investment_id": "422259af-5247-4e7d-a78e-784a54f4818f",
+      "asset_name": "Bitcoin",
+      "asset_type": "crypto",
+      "purchase_price": 400.0,
+      "created_at": "2025-11-03T20:30:37.291579"
     }
-  ]
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10,
+    "sort": {
+      "sorted": false,
+      "unsorted": true,
+      "empty": true
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": true,
+  "totalElements": 2,
+  "totalPages": 1,
+  "first": true,
+  "sort": {
+    "sorted": false,
+    "unsorted": true,
+    "empty": true
+  },
+  "numberOfElements": 2,
+  "size": 10,
+  "number": 0,
+  "empty": false
 }
 ```
 
@@ -515,9 +662,9 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 
 ```json
 {
-    "asset_name" : "BBAS3",
-    "amount": 2.0,
-    "purchase_price": 41.22
+  "asset_name" : "Bitcoin",
+  "amount" : 0.004,
+  "purchase_price" : 400.0
 }
 ```
 
@@ -525,11 +672,11 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 
 ```json
 {
-    "amount": 2.0,
-    "asset_name" : "BBAS3",
-    "asset_type": "stock",
-    "purchase_price": 41.22,
-    "created_at": "2025-10-15T15:15:00"
+  "amount": 0.004,
+  "asset_name": "Bitcoin",
+  "asset_type": "crypto",
+  "purchase_price": 400.0,
+  "created_at": "2025-11-03T20:32:40.771429"
 }
 ```
 
@@ -577,24 +724,51 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 **Response 200**
 
 ```json
-[
-  {
-    "course_id": "a12f5670-2d4e-11ef-bf4b-123456789abc",
-    "title": "Introdução aos Investimentos",
-    "summary": "Aprenda os fundamentos essenciais para começar a investir com segurança.",
-    "level" : "basico",
-    "thumbnail": "https://cdn.borainvestir.b3.com.br/2024/04/17112249/fundos-de-investimentos-como-escolher.jpg"
-  }
-]
+{
+  "content": [
+    {
+      "course_id": "a12f5670-2d4e-11ef-bf4b-123456789abc",
+      "title": "Introdução aos Investimentos",
+      "summary": "Aprenda os fundamentos essenciais para começar a investir com segurança.",
+      "level": "BASICO",
+      "thumbnail": "https://cdn.borainvestir.b3.com.br/2024/04/17112249/fundos-de-investimentos-como-escolher.jpg"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10,
+    "sort": {
+      "sorted": false,
+      "unsorted": true,
+      "empty": true
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": true,
+  "totalElements": 2,
+  "totalPages": 1,
+  "first": true,
+  "sort": {
+    "sorted": false,
+    "unsorted": true,
+    "empty": true
+  },
+  "numberOfElements": 2,
+  "size": 10,
+  "number": 0,
+  "empty": false
+}
 ```
 
 ---
 
 ### 6.2 Detalhar curso e listar aulas
 
-### *GET /courses/{id}*
+### *GET /courses/{courseId}/accounts/{accountId}*
 
-**Descrição:** Retorna detalhes do curso e suas aulas.
+**Descrição:** Retorna detalhes do curso e suas aulas (inclui id da conta para verificar completude do curso e etc).
 
 **Response 200**
 
@@ -604,25 +778,25 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
   "title": "Introdução aos Investimentos",
   "description": "Curso completo para aprender sobre tipos de investimento, riscos e rentabilidade.",
   "thumbnail": "https://cdn.borainvestir.b3.com.br/2024/04/17112249/fundos-de-investimentos-como-escolher.jpg",
-  "level" : "basico",
+  "level": "BASICO",
   "lessons": [
-    { 
-      "lesson_id": 1,
+    {
+      "lesson_id": "63190b5a-08c2-4b77-87e0-d71b4286367f",
       "title": "O que é investimento?",
-      "video_url" : "https://youtu.be/Mca-HLZkaB8?si=95M8eDyMHJJMHl8R",
-      "duration" : "241",
-      "lesson_order" : "1",
-      "current_time" : "241",
-      "completed" : "true"
+      "video_url": "https://youtu.be/Mca-HLZkaB8?si=95M8eDyMHJJMHl8R",
+      "duration": 241,
+      "lesson_order": 1,
+      "current_time": 0,
+      "completed": false
     },
-    { 
-      "lesson_id": 2, 
+    {
+      "lesson_id": "36ef136e-5728-4dc2-a0e6-9d5730e7d81c",
       "title": "Perfil do investidor",
-      "video_url" : "https://youtu.be/enDUY7pHwsU?si=66az5prpSvP-UF3z",
-      "duration" : "543",
-      "lesson_order" : 2,
-      "current_time" : 325,
-      "completed" : false
+      "video_url": "https://youtu.be/enDUY7pHwsU?si=66az5prpSvP-UF3z",
+      "duration": 543,
+      "lesson_order": 2,
+      "current_time": 543,
+      "completed": true
     }
   ]
 }
@@ -669,8 +843,18 @@ http://localhost:8080/assets?page=0&size=10&sort=name,asc&asset_type=crypto
 | Código | Motivo                           |
 | ------ | -------------------------------- |
 | 400    | Dados inválidos                  |
-| 401    |
 | 404    | Conta, Curso ou Aula não encontrados |
 | 500    | Erro interno do servidor         |
 
 ---
+
+---
+
+### Autores
+**Luiz Carvalho**  
+Desenvolvedor Full Stack em formação - FIAP  
+[GitHub](https://github.com/nxizy)
+
+**Maria Eduarda**  
+Desenvolvedor Full Stack em formação - FIAP  
+[GitHub](https://github.com/dudisxqz)

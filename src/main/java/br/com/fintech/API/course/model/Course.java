@@ -1,5 +1,6 @@
 package br.com.fintech.API.course.model;
 
+import br.com.fintech.API.course.model.dto.CourseResponse;
 import br.com.fintech.API.course.model.enums.CourseLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "COURSES")
@@ -19,7 +19,7 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "course_id")
-    private UUID id;
+    private String id;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -31,7 +31,7 @@ public class Course {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
+    @Column(name = "course_level",nullable = false)
     private CourseLevel level;
 
     @Column(name = "THUMBNAIL")
@@ -41,5 +41,15 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
+
+    public CourseResponse toCourseResponse() {
+        return CourseResponse.builder()
+                .course_id(this.id)
+                .title(this.title)
+                .summary(this.summary)
+                .level(this.level)
+                .thumbnail(this.thumbnail)
+                .build();
+    }
 
 }

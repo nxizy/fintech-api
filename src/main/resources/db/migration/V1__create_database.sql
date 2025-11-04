@@ -30,10 +30,10 @@ CREATE TABLE courses (
                          title VARCHAR2(255) NOT NULL,
                          summary VARCHAR2(255),
                          description VARCHAR2(500),
-                         "level" VARCHAR2(20),
+                         course_level VARCHAR2(20),
                          thumbnail VARCHAR2(500),
                          created_at TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                         CONSTRAINT chk_course_level CHECK ("level" IN ('BASICO', 'INTERMEDIARIO', 'AVANCADO')),
+                         CONSTRAINT chk_course_level CHECK (course_level IN ('BASICO', 'INTERMEDIARIO', 'AVANCADO')),
                          CONSTRAINT uq_course_title UNIQUE (title)
 );
 

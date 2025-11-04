@@ -5,11 +5,15 @@ import br.com.fintech.API.account.model.DTO.AccountResponseDTO;
 import br.com.fintech.API.account.model.DTO.CreateAccountRequest;
 import br.com.fintech.API.account.model.DTO.UpdateAccountRequest;
 import br.com.fintech.API.account.service.AccountService;
+import br.com.fintech.API.course.model.dto.LessonProgressDTO;
+import br.com.fintech.API.course.model.dto.ProgressUpdateDTO;
+import br.com.fintech.API.course.service.CourseService;
 import br.com.fintech.API.infra.security.SecurityUtils;
 import br.com.fintech.API.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,13 +27,12 @@ import static br.com.fintech.API.infra.config.APIPaths.ACCOUNT;
 @RestController
 @RequestMapping(ACCOUNT)
 @Tag(name = "Account's Management", description = "Operations for creating, updating and retrieving accounts")
+@RequiredArgsConstructor
 public class AccountController {
 
-    @Autowired
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    private AccountService accountService;
+    private final SecurityUtils securityUtils;
+    private final AccountService accountService;
+    private final CourseService courseService;
 
     @GetMapping
     @Operation(summary = "Get accounts by the user of the JWT given")
@@ -66,5 +69,18 @@ public class AccountController {
     public ResponseEntity<AccountResponseDTO> deleteAccount(@PathVariable String id) {
         accountService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    //Atualizando o progresso da aula de um curso de uma determinada conta
+    @PutMapping("/{accountId}/courses/{courseId}/lessons/{lessonId}/progress")
+    public ResponseEntity<LessonProgressDTO> updateLessonProgress(
+            @PathVariable String accountId,
+            @PathVariable String courseId,
+            @PathVariable String lessonId,
+            @RequestBody ProgressUpdateDTO progressUpdate
+    ) {
+        LessonProgressDTO updatedProgress = courseService.updateLessonProgress(accountId, courseId, lessonId, progressUpdate);
+        return ResponseEntity.ok(updatedProgress);
     }
 }

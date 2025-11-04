@@ -1,12 +1,17 @@
 package br.com.fintech.API.course.model.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
-public record ProgressUpdateDTO(
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ProgressUpdateDTO{
 
-        @NotNull(message = "O tempo atual (currentTime) não pode ser nulo.")
-        @PositiveOrZero(message = "O tempo atual (currentTime) deve ser zero ou positivo.")
-        Integer currentTime
-) {
+    @NotBlank
+    @JsonProperty("current_time")
+    private Integer currentTime;
 }
