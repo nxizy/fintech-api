@@ -29,7 +29,6 @@ O projeto utiliza:
 - `lombok` → Redução de boilerplate
 ---
 
-
 ## Como executar o projeto
 
 ### 1 -  Clonar o repositório
@@ -53,18 +52,10 @@ spring.jpa.hibernate.ddl-auto=update
 
 ---
 
-### 3 - Instalar dependências e compilar
+### 3 - Executar o projeto
 
 ```bash
-  mvn clean install
-```
-
----
-
-### 4 - Executar o projeto
-
-```bash
-  mvn spring-boot:run
+  ./mvnw spring-boot:run
 ```
 
 A aplicação iniciará na porta padrão **8080**:
@@ -89,8 +80,6 @@ Lá estarão listados todos os endpoints disponíveis da API, com exemplos e par
 
 
 **Todos os endpoints (exceto /auth/register e /auth/login) requerem o header Authorization: Bearer {token}**
-
----
 
 # Índice
 
